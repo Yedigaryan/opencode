@@ -6,8 +6,9 @@ import { ConfigProvider } from "@opencode/schema/config/provider"
 import { Money } from "@opencode/schema/money"
 import { Effect } from "effect"
 import { Config } from "../../config.js"
-import { Provider } from "../../provider.js"
 import { Model } from "../../model.js"
+import { Provider } from "../../provider.js"
+import { Variant } from "../../variant.js"
 import { ConfigEntryObserver } from "./entry-observer.js"
 
 export const Plugin = define({
@@ -155,6 +156,13 @@ export const Plugin = define({
             }
             if (config.disabled !== undefined) model.enabled = !config.disabled
             if (config.limit !== undefined) model.limit = { ...model.limit, ...config.limit }
+            if (config.variants === undefined && !base)
+              model.variants = [
+                ...Variant.resolve({
+                  ...model,
+                  package: model.package ?? catalog.provider.get(providerID)?.provider.package,
+                }),
+              ]
           })
         }
       }
