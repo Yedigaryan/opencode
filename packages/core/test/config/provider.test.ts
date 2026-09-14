@@ -376,7 +376,7 @@ describe("ConfigProviderPlugin.Plugin", () => {
 
   it.effect("generates variants after rewriting a configured model package", () =>
     Effect.gen(function* () {
-      const catalog = yield* Catalog.Service
+      const models = yield* Model.Service
       yield* addPlugin([
         new Document({
           type: "document",
@@ -396,7 +396,7 @@ describe("ConfigProviderPlugin.Plugin", () => {
         }),
       ])
 
-      const model = required(yield* catalog.model.get(Provider.ID.make("custom"), Model.ID.make("claude")))
+      const model = required(yield* models.get(Provider.ID.make("custom"), Model.ID.make("claude")))
       expect(model.package).toBe("@opencode/ai/providers/anthropic")
       expect(model.variants.map((variant) => variant.id)).toEqual([
         Model.VariantID.make("low"),
