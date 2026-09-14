@@ -247,6 +247,14 @@ describe("ModelsDev Service", () => {
             },
           },
         },
+        "cloudflare-workers-ai": {
+          id: "cloudflare-workers-ai",
+          name: "Cloudflare Workers AI",
+          env: ["CLOUDFLARE_ACCOUNT_ID", "CLOUDFLARE_API_KEY"],
+          npm: "@ai-sdk/openai-compatible",
+          api: "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/ai/v1",
+          models: {},
+        },
       })
       const state = yield* Ref.make(initialState)
       const result = yield* provided(
@@ -256,6 +264,8 @@ describe("ModelsDev Service", () => {
       )
       expect(result[0]?.info.package).toBe("@opencode/ai/providers/openai-compatible")
       expect(result[0]?.models[0]?.package).toBe("@opencode/ai/providers/openai")
+      expect(result[1]?.info.package).toBe("@opencode/ai/providers/cloudflare-workers-ai")
+      expect(result[1]?.info.settings).toBeUndefined()
     }),
   )
 

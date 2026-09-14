@@ -39,10 +39,13 @@ export const CloudflareWorkersAIPlugin = define({
       const item = evt.get(providerID)
       if (!item) return
       evt.update(item.provider.id, (provider) => {
-        if (provider.package === "@opencode/ai/providers/cloudflare-workers-ai") return
         if (typeof provider.settings?.baseURL === "string") return
         const accountId = resolveAccountId(provider.settings ?? {})
-        if (accountId) provider.settings = { ...provider.settings, baseURL: workersEndpoint(accountId) }
+        if (!accountId) return
+        provider.settings =
+          provider.package === "@opencode/ai/providers/cloudflare-workers-ai"
+            ? { ...provider.settings, accountId }
+            : { ...provider.settings, baseURL: workersEndpoint(accountId) }
       })
     })
     yield* ctx.aisdk.hook(

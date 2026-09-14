@@ -1244,6 +1244,16 @@ describe("ModelResolver", () => {
           settings: { region: "us-east-1", topP: 0.6 },
         }),
       )
+      const workers = yield* ModelResolver.fromCatalogModel(
+        model("@opencode/ai/providers/cloudflare-workers-ai", {
+          modelID: "@cf/meta/llama-3.1-8b-instruct",
+        }),
+        Credential.Key.make({
+          type: "key",
+          key: "workers-secret",
+          configuration: { accountId: "account" },
+        }),
+      )
 
       expect(google.route.id).toBe("gemini")
       expect(google.route.defaults.providerOptions).toEqual({ thinkingConfig: { thinkingBudget: 1_024 } })
@@ -1281,6 +1291,7 @@ describe("ModelResolver", () => {
       expect(bedrock.route.defaults.http?.body).toEqual({ serviceTier: { type: "priority" } })
       expect(mantle.route.id).toBe("bedrock-mantle-chat")
       expect(mantle.route.defaults.generation).toEqual({ topP: 0.6 })
+      expect(workers.route.endpoint.baseURL).toBe("https://api.cloudflare.com/client/v4/accounts/account/ai/v1")
     }),
   )
 

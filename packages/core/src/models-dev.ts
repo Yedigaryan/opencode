@@ -88,12 +88,15 @@ function normalize(input: Record<string, SourceProvider>): readonly Snapshot[] {
   const providers: Snapshot[] = []
   for (const item of Object.values(input)) {
     const providerID = Provider.ID.make(item.id)
+    const packageName = nativePackage(item)
     const info = {
       id: providerID,
       name: item.name,
       activation: "auto",
-      package: nativePackage(item),
-      ...(item.api ? { settings: { baseURL: item.api } } : {}),
+      package: packageName,
+      ...(item.api && packageName !== "@opencode/ai/providers/cloudflare-workers-ai"
+        ? { settings: { baseURL: item.api } }
+        : {}),
     } satisfies Provider.Info
     const models: Model.Info[] = []
     for (const model of Object.values(item.models)) {

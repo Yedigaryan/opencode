@@ -91,14 +91,14 @@ describe("CloudflareWorkersAIPlugin", () => {
     ),
   )
 
-  it.effect("leaves the native Workers AI package to derive its own endpoint", () =>
+  it.effect("gives the native Workers AI package its account ID", () =>
     withEnv({ CLOUDFLARE_ACCOUNT_ID: "acct" }, () =>
       Effect.gen(function* () {
         const catalog = yield* seed((provider) => {
           provider.package = "@opencode/ai/providers/cloudflare-workers-ai"
         })
         yield* addPlugin()
-        expect(required(yield* catalog.get(providerID)).settings?.baseURL).toBeUndefined()
+        expect(required(yield* catalog.get(providerID)).settings).toEqual({ accountId: "acct" })
       }),
     ),
   )
