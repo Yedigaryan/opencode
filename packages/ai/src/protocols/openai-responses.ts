@@ -97,6 +97,8 @@ const OpenAIResponsesToolChoice = Schema.Union([
 ])
 
 const OpenAIResponsesInputItem = Schema.Union([
+  Schema.Struct({ type: Schema.Literal("message"), role: Schema.tag("system"), content: Schema.String }),
+  Schema.Struct({ type: Schema.Literal("message"), role: Schema.tag("developer"), content: Schema.String }),
   OpenResponses.InputItem,
   OpenAIResponsesHostedToolItem,
   OpenResponses.ConfigurationUpdate,
